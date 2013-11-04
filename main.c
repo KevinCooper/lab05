@@ -1,5 +1,7 @@
 #include <msp430.h> 
-
+#include "LCDDriver/LCDDriver.h"
+#include "TemplateGame/game.h"
+#include "clock/clock.h"
 /*
  * main.c
  */
@@ -15,7 +17,7 @@ int main(void) {
     while (1) {
     	switch(flag){
     	case BIT0:
-    		counter =0;//Also clear the clock!
+    		counter=0;//Also clear the clock!
     	case BIT1:
     		counter=0;
     	case BIT2:
