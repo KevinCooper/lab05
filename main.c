@@ -11,13 +11,20 @@ char flag;
 
 
 int main(void) {
+    WDTCTL = WDTPW|WDTHOLD;                 // stop the watchdog timer
+	setFrequency(SPEED_1MHZ);
+	initSPI();
+	LCDinit();
+	LCDclear();
+
+	writeString("ABCDEFG12345678");
 	setup();
 	int counter;
 
     while (1) {
     	switch(flag){
     	case BIT0:
-    		counter=0;//Also clear the clock!
+    		counter=0;//Clear the clock too
     	case BIT1:
     		counter=0;
     	case BIT2:
@@ -32,7 +39,6 @@ int main(void) {
 }
 
 void setup(){
-    WDTCTL = WDTPW|WDTHOLD;                 // stop the watchdog timer
     P1DIR &= ~(BIT0|BIT1|BIT2|BIT3);                // set buttons to input
     P1IE |= BIT0|BIT1|BIT2|BIT3;                 // enable the interrupts
     P1IES |= BIT0|BIT1|BIT2|BIT3;                   // configure interrupt to sense falling edges
@@ -47,8 +53,9 @@ void setup(){
     TACTL |= TACLR;					//Reset it back to 0
     TACTL |= TASSEL1;				//Set to SMCLK
     TACTL |= ID0|ID1;				//Set the clock to 125MHZ
-    TACTL &= ~TAIFG;				//Clear out the flaf
-    TACTL |= MC1;
+    TACTL &= ~TAIFG;				//Clear out the flag
+    TACTL |= MC1;					//Continuous mode
+    TACTL |= TAIE;  				//Enable the interrupt
 }
 
 #pragma vector=PORT1_VECTOR
