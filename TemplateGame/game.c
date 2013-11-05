@@ -34,7 +34,7 @@ board_t newGameBoard(int sizeX, int sizeY)
 
 	//Initialize a blank board
 	for (i = 0; i < temp.information.height; i++)
-		for (j = 0; i < temp.information.row; j++)
+		for (j = 0; j < temp.information.row; j++)
 			temp.boardPtr[i][j] = BLANK;
 
 	//Set up the player
