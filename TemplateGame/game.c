@@ -54,7 +54,7 @@ char getPosition(board_t * board, int row, int column)
 	return board->boardPtr[row][column];
 }
 
-char movDirection(board_t * board, char xDirection, char yDirection)
+char movDirection(board_t * board, int xDirection, int yDirection)
 {
 	if (board->player.x + xDirection < board->information.row
 			&& board->player.y + yDirection < board->information.height
@@ -76,14 +76,17 @@ char * toString(board_t * board)
 
 	for (i = 0; i < board->information.height; i++)
 		for (j = 0; j < board->information.row; j++)
-			if(board->player.x == i&& board->player.y==j)
+			if (board->player.x == j && board->player.y == i) {
 				string[i * board->information.row + j] = 'p';
-			string[i * board->information.row + j] = board->boardPtr[i][j];
+			} else {
+				string[i * board->information.row + j] = board->boardPtr[i][j];
+			}
 
 	return string;
 }
 
-void freeString( char * string){
+void freeString(char * string)
+{
 	free(string);
 }
 

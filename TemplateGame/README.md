@@ -11,7 +11,7 @@ Attempts to move the player in X/Y direction. Diagonal and moves greater than di
 --returns zero if the move was made with no errors<br>
 --returns one if the player tried to move out of bounds, no move made<br>
 --returns two if the player hit an object, no move made
-`char movDirection(board_t * board, char xDirection, char yDirection)`
+`char movDirection(board_t * board, int xDirection, int yDirection)`
 
 Returns a pointer to a single string that represents the board <br>
 `char * toString(board_t * board)`

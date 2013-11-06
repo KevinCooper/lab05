@@ -29,7 +29,7 @@ typedef struct{
 
 board_t newGameBoard(int sizeX, int sizeY);
 void setPosition(board_t * board, char object, int row, int column);
-char movDirection(board_t * board, char xDirection, char yDirection);
+char movDirection(board_t * board, int xDirection, int yDirection);
 char * toString(board_t * board);
 void freeString( char * string);
 int getPlayerPosX(board_t * board);
