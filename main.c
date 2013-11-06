@@ -9,89 +9,119 @@ void setup();
 
 char flag;
 
-
-int main(void) {
-    WDTCTL = WDTPW|WDTHOLD;                 // stop the watchdog timer
+int main(void)
+{
+	WDTCTL = WDTPW | WDTHOLD;                 // stop the watchdog timer
 	setFrequency(SPEED_1MHZ);
 	initSPI();
 	LCDinit();
 	LCDclear();
 
-	//setup();
+	board_t myGame = newGameBoard(8, 2);
+	int counter = 0;
+	setup();
 
-	board_t myGame = newGameBoard( 8, 2);
-	char * testString = toString(&myGame);
-	writeString(testString);
-	freeString(testString);
 
-	int counter;
-
-    while (1) {
-    	switch(flag){
-    	case BIT0:
-    		counter=0;//Clear the clock too
-    	case BIT1:
-    		counter=0;
-    	case BIT2:
-    		counter=0;
-    	case BIT3:
-    		counter=0;
-    	case BIT4:
-    		counter++;
-    	}
-    }
-    return 0;
+	while (1) {
+		switch (flag) {
+		case BIT0:
+			counter = 0;                 //Clear the clock too
+		case BIT1:
+			counter = 0;
+		case BIT2:
+			counter = 0;
+		case BIT3:
+			counter = 0;
+		case BIT4:
+			counter++;
+		}
+		if(counter ==4){
+			writeString("  LOSE  ");
+			while(1){}
+		}
+	}
+	return 0;
 }
 
-void setup(){
-    P1DIR &= ~(BIT0|BIT1|BIT2|BIT3);                // set buttons to input
-    P1IE |= BIT0|BIT1|BIT2|BIT3;                 // enable the interrupts
-    P1IES |= BIT0|BIT1|BIT2|BIT3;                   // configure interrupt to sense falling edges
-    P1REN |= BIT0|BIT1|BIT2|BIT3;                   // enable internal pull-up/pull-down network
-    P1OUT |= BIT0|BIT1|BIT2|BIT3;                   // configure as pull-up
-    P1IFG &= ~(BIT0|BIT1|BIT2|BIT3);                // clear flags
-    __enable_interrupt();
+void setup()
+{
+	P1DIR &= ~(BIT0 | BIT1 | BIT2 | BIT3);               // set buttons to input
+	P1IE |= BIT0 | BIT1 | BIT2 | BIT3;                 // enable the interrupts
+	P1IES |= BIT0 | BIT1 | BIT2 | BIT3; // configure interrupt to sense falling edges
+	P1REN |= BIT0 | BIT1 | BIT2 | BIT3; // enable internal pull-up/pull-down network
+	P1OUT |= BIT0 | BIT1 | BIT2 | BIT3;                  // configure as pull-up
+	P1IFG &= ~(BIT0 | BIT1 | BIT2 | BIT3);                // clear flags
+	__enable_interrupt();
 
+	TACTL &= ~(MC0 | MC1);			//Stop the clock
+	TACTL |= TACLR;					//Reset it back to 0
+	TACTL |= TASSEL1;				//Set to SMCLK
+	TACTL |= ID0 | ID1;				//Set the clock to 125MHZ
+	TACTL &= ~TAIFG;				//Clear out the flag
+	TACTL |= MC1;					//Continuous mode
+	TACTL |= TAIE;  				//Enable the interrupt
+}
 
+void clearTimer()
+{
+	TACTL |= TACLR;
+}
 
-    TACTL &= ~(MC0|MC1);			//Stop the clock
-    TACTL |= TACLR;					//Reset it back to 0
-    TACTL |= TASSEL1;				//Set to SMCLK
-    TACTL |= ID0|ID1;				//Set the clock to 125MHZ
-    TACTL &= ~TAIFG;				//Clear out the flag
-    TACTL |= MC1;					//Continuous mode
-    TACTL |= TAIE;  				//Enable the interrupt
+void debounce()
+{
+	__delay_cycles(1000);  //Delay 1ms
 }
 
 #pragma vector=PORT1_VECTOR
 __interrupt void Port_1_ISR(void)
 {
 
-    if (P1IFG & BIT0)
-    {
-        P1IFG &= ~BIT0;                            // clear flag
-        flag |= BIT0;
-    }
-    if (P1IFG & BIT1)
-    {
-        P1IFG &= ~BIT1;                            // clear flag
-        flag |= BIT1;
-    }
+	if (P1IFG & BIT0) {
+		if (BIT0 & P1IES) {
+			flag |= BIT0;
+			clearTimer();
+		} else {
+			debounce();
+		}
+		P1IES ^= BIT0;
+		P1IFG &= ~BIT0;
+	}
+	if (P1IFG & BIT1) {
+		if (BIT1 & P1IES) {
+			flag |= BIT1;
+			clearTimer();
+		} else {
+			debounce();
+		}
+		P1IES ^= BIT1;
+		P1IFG &= ~BIT1;
+	}
 
-    if (P1IFG & BIT2)
-    {
-        P1IFG &= ~BIT2;                         // clear flag
-        flag |= BIT2;
-    }
+	if (P1IFG & BIT2) {
+		if (BIT2 & P1IES) {
+			flag |= BIT2;
+			clearTimer();
+		} else {
+			debounce();
+		}
+		P1IES ^= BIT2;
+		P1IFG &= ~BIT2;
+	}
 
-    if (P1IFG & BIT3)
-    {
-        P1IFG &= ~BIT3;                         // clear
-        flag |= BIT3;
-    }
+	if (P1IFG & BIT3) {
+		if (BIT3 & P1IES) {
+			flag |= BIT3;
+			clearTimer();
+		} else {
+			debounce();
+		}
+		P1IES ^= BIT3;
+		P1IFG &= ~BIT3;
+	}
 }
 
 #pragma vector=TIMER0_A1_VECTOR
-__interrupt void TIMER0_A1_ISR(){
+__interrupt void TIMER0_A1_ISR()
+{
 	flag |= BIT4;
 }
