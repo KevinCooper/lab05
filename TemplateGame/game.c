@@ -24,10 +24,11 @@ board_t newGameBoard(int sizeX, int sizeY)
 	temp.information.row = sizeX;
 
 	//Set up the 2d array for use later
-	temp.boardPtr = malloc(temp.information.height * DATA_SIZE);
+	temp.boardPtr = malloc(temp.information.height * sizeof(char *));
 	for (i = 0; i < temp.information.height; i++) {
-		temp.boardPtr[i] = malloc(temp.information.row * DATA_SIZE);
+		temp.boardPtr[i] = malloc(temp.information.row * sizeof(char));
 	}
+
 
 	//Referenced the following link to better understand how 2d arrays work with pointers in C
 	//http://stackoverflow.com/questions/3911400/passing-2d-arrays
@@ -54,17 +55,21 @@ char getPosition(board_t * board, int row, int column)
 	return board->boardPtr[row][column];
 }
 
-char movDirection(board_t * board, int xDirection, int yDirection)
+int movDirection(board_t * board, int xDirection, int yDirection)
 {
 	if (board->player.x + xDirection < board->information.row
-			&& board->player.y + yDirection < board->information.height
-			&& (getPosition(board, board->player.x + xDirection,
-					board->player.y + yDirection) == BLANK)) {
-		board->player.x += xDirection;
-		board->player.y += yDirection;
+			&& board->player.y + yDirection < board->information.height) {
+		if ((getPosition(board, board->player.y + yDirection,
+				board->player.x + xDirection) == BLANK)) {
+			board->player.x += xDirection;
+			board->player.y += yDirection;
+			return 1;  //Good move
+		}else{
+			return 2; //Hit something bad
+		}
 		return 1;
 	} else {
-		return 0;
+		return 0;  //Hit some wall
 	}
 }
 
