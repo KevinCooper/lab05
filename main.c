@@ -2,10 +2,17 @@
 #include "LCDDriver/LCDDriver.h"
 #include "TemplateGame/game.h"
 #include "clock/clock.h"
-/*
- * main.c
- */
+
+#define BUTTON_1 1
+#define BUTTON_2 2
+#define BUTTON_3 3
+#define BUTTON_4 4
+#define CLOCK 10
+
 void setup();
+void clearTimer();
+void updateBoard(board_t myGame);
+
 
 char flag;
 
@@ -19,39 +26,52 @@ int main(void)
 
 	board_t myGame = newGameBoard(8, 2);
 	int counter = 0;
+	flag = 0;
+	updateBoard(myGame);
 	setup();
 
 
 	while (1) {
+		updateBoard(myGame);
 		switch (flag) {
-		case BIT0:
-			counter = 0;                 //Clear the clock too
-		case BIT1:
+		case BUTTON_1:
+			clearTimer();
 			counter = 0;
-		case BIT2:
+		case BUTTON_2:
+			clearTimer();
 			counter = 0;
-		case BIT3:
+		case BUTTON_3:
+			clearTimer();
 			counter = 0;
-		case BIT4:
+		case BUTTON_4:
+			clearTimer();
+			counter = 0;
+		case CLOCK:
 			counter++;
 		}
-		if(counter ==4){
-			writeString("  LOSE  ");
+		if(counter ==8){
+			writeStringTwo("  LOSE  ", "        ");
 			while(1){}
 		}
 	}
 	return 0;
 }
 
+void updateBoard(board_t myGame){
+	char * boardString = toString(&myGame);
+	writeString(boardString);
+	freeString(boardString);
+}
+
 void setup()
 {
 	P1DIR &= ~(BIT0 | BIT1 | BIT2 | BIT3);               // set buttons to input
-	P1IE |= BIT0 | BIT1 | BIT2 | BIT3;                 // enable the interrupts
-	P1IES |= BIT0 | BIT1 | BIT2 | BIT3; // configure interrupt to sense falling edges
 	P1REN |= BIT0 | BIT1 | BIT2 | BIT3; // enable internal pull-up/pull-down network
 	P1OUT |= BIT0 | BIT1 | BIT2 | BIT3;                  // configure as pull-up
+	P1IES |= BIT0 | BIT1 | BIT2 | BIT3; // configure interrupt to sense falling edges
 	P1IFG &= ~(BIT0 | BIT1 | BIT2 | BIT3);                // clear flags
-	__enable_interrupt();
+	P1IE |= BIT0 | BIT1 | BIT2 | BIT3;                 // enable the interrupts
+
 
 	TACTL &= ~(MC0 | MC1);			//Stop the clock
 	TACTL |= TACLR;					//Reset it back to 0
@@ -60,6 +80,7 @@ void setup()
 	TACTL &= ~TAIFG;				//Clear out the flag
 	TACTL |= MC1;					//Continuous mode
 	TACTL |= TAIE;  				//Enable the interrupt
+	__enable_interrupt();
 }
 
 void clearTimer()
@@ -78,8 +99,7 @@ __interrupt void Port_1_ISR(void)
 
 	if (P1IFG & BIT0) {
 		if (BIT0 & P1IES) {
-			flag |= BIT0;
-			clearTimer();
+			flag = BUTTON_1;
 		} else {
 			debounce();
 		}
@@ -88,8 +108,7 @@ __interrupt void Port_1_ISR(void)
 	}
 	if (P1IFG & BIT1) {
 		if (BIT1 & P1IES) {
-			flag |= BIT1;
-			clearTimer();
+			flag = BUTTON_2;
 		} else {
 			debounce();
 		}
@@ -99,8 +118,7 @@ __interrupt void Port_1_ISR(void)
 
 	if (P1IFG & BIT2) {
 		if (BIT2 & P1IES) {
-			flag |= BIT2;
-			clearTimer();
+			flag = BUTTON_3;
 		} else {
 			debounce();
 		}
@@ -110,8 +128,7 @@ __interrupt void Port_1_ISR(void)
 
 	if (P1IFG & BIT3) {
 		if (BIT3 & P1IES) {
-			flag |= BIT3;
-			clearTimer();
+			flag = BUTTON_4;
 		} else {
 			debounce();
 		}
@@ -123,5 +140,6 @@ __interrupt void Port_1_ISR(void)
 #pragma vector=TIMER0_A1_VECTOR
 __interrupt void TIMER0_A1_ISR()
 {
-	flag |= BIT4;
+	TACTL &= ~TAIFG;
+	flag = CLOCK;
 }
