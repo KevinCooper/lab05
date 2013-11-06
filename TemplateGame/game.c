@@ -75,10 +75,16 @@ char * toString(board_t * board)
 	char * string = malloc(board->information.height * board->information.row);
 
 	for (i = 0; i < board->information.height; i++)
-		for (j = 0; i < board->information.row; j++)
+		for (j = 0; j < board->information.row; j++)
+			if(board->player.x == i&& board->player.y==j)
+				string[i * board->information.row + j] = 'p';
 			string[i * board->information.row + j] = board->boardPtr[i][j];
 
 	return string;
+}
+
+void freeString( char * string){
+	free(string);
 }
 
 int getPlayerPosX(board_t * board)

@@ -17,8 +17,13 @@ int main(void) {
 	LCDinit();
 	LCDclear();
 
-	writeString("ABCDEFG12345678");
-	setup();
+	//setup();
+
+	board_t myGame = newGameBoard( 8, 2);
+	char * testString = toString(&myGame);
+	writeString(testString);
+	freeString(testString);
+
 	int counter;
 
     while (1) {

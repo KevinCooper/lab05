@@ -21,7 +21,7 @@ typedef struct{
 typedef struct{
 	books_t information;
 	player_t player;
-	int ** boardPtr;
+	char ** boardPtr;
 }board_t;
 
 
@@ -31,6 +31,7 @@ board_t newGameBoard(int sizeX, int sizeY);
 void setPosition(board_t * board, char object, int row, int column);
 char movDirection(board_t * board, char xDirection, char yDirection);
 char * toString(board_t * board);
+void freeString( char * string);
 int getPlayerPosX(board_t * board);
 int getPlayerPosY(board_t * board);
 player_t getPlayer(board_t * board);

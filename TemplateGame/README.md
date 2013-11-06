@@ -24,3 +24,6 @@ Return the Y position of the player.<br>
 
 Return the player object that the board is maintaining.<br>
 `player_t getPlayer(board_t * board)`
+
+Free the string that was previously made with toString. This is IMPORTANT.<br>
+`void freeString( char * string)`
