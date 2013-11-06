@@ -26,7 +26,7 @@ int main(void)
 	LCDclear();
 
 	board_t myGame = newGameBoard(8, 2);
-	buildBombs(myGame);
+	buildBombs(myGame);		//2 min 19 sec
 	updateBoard(myGame);
 	int counter = 0;
 	flag = 0;
@@ -73,7 +73,7 @@ int main(void)
 		}
 		if (result == 2) {
 			LCDclear();
-			writeStringTwo("  LOSE  ", "        ");
+			writeStringTwo(" !BOOM! ", "><(((°> ");
 			while (1) {
 			}
 		}
@@ -90,6 +90,7 @@ int main(void)
 
 void buildBombs(board_t myGame)
 {
+	writeString("GenerateRandoms ");
 	unsigned int state = rand();
 	int spaceBottom = 1;
 	int spaceTop = prand(state) % 3 + 1; //top is between 1-3
