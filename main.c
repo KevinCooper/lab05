@@ -13,7 +13,6 @@ void setup();
 void clearTimer();
 void updateBoard(board_t myGame);
 
-
 char flag;
 
 int main(void)
@@ -32,39 +31,51 @@ int main(void)
 
 	setup();
 
-
 	while (1) {
 		switch (flag) {
 		case BUTTON_1:
 			clearTimer();
 			counter = 0;
 			result = movDirection(&myGame, 1, 0);
+			break;
 		case BUTTON_2:
 			clearTimer();
 			counter = 0;
 			result = movDirection(&myGame, -1, 0);
+			break;
 		case BUTTON_3:
 			clearTimer();
 			counter = 0;
 			result = movDirection(&myGame, 0, 1);
+			break;
 		case BUTTON_4:
 			clearTimer();
 			counter = 0;
 			result = movDirection(&myGame, 0, -1);
+			break;
 		case CLOCK:
 			counter++;
+			break;
 		}
-		if(counter ==8){
+		if (counter == 200) {
 			LCDclear();
 			writeStringTwo("  LOSE  ", "        ");
-			while(1){}
+			while (1) {
+			}
+		}
+		if (result == 1) {
+			LCDclear();
+			writeStringTwo("  LOSE  ", "        ");
+			while (1) {
+			}
 		}
 		updateBoard(myGame);
 	}
 	return 0;
 }
 
-void updateBoard(board_t myGame){
+void updateBoard(board_t myGame)
+{
 	LCDclear();
 	char * boardString = toString(&myGame);
 	writeString(boardString);
@@ -79,7 +90,6 @@ void setup()
 	P1IES |= BIT0 | BIT1 | BIT2 | BIT3; // configure interrupt to sense falling edges
 	P1IFG &= ~(BIT0 | BIT1 | BIT2 | BIT3);                // clear flags
 	P1IE |= BIT0 | BIT1 | BIT2 | BIT3;                 // enable the interrupts
-
 
 	TACTL &= ~(MC0 | MC1);			//Stop the clock
 	TACTL |= TACLR;					//Reset it back to 0
@@ -104,7 +114,7 @@ void debounce()
 #pragma vector=PORT1_VECTOR
 __interrupt void Port_1_ISR(void)
 {
-	__disable_interrupt();
+
 	if (P1IFG & BIT0) {
 		if (BIT0 & P1IES) {
 			flag = BUTTON_1;
@@ -143,7 +153,6 @@ __interrupt void Port_1_ISR(void)
 		P1IES ^= BIT3;
 		P1IFG &= ~BIT3;
 	}
-	__enable_interrupt();
 }
 
 #pragma vector=TIMER0_A1_VECTOR
