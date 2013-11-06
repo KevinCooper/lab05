@@ -27,7 +27,7 @@ int main(void)
 	updateBoard(myGame);
 	int counter = 0;
 	flag = 0;
-	char result = 100; //Determines what should happen based on the movement made
+	int result = 0; //Determines what should happen based on the movement made
 
 	setup();
 
@@ -61,15 +61,23 @@ int main(void)
 			counter++;
 			break;
 		}
-		if (counter == 200) {
+		flag = 0;
+		if (counter == 1000) {
 			LCDclear();
 			writeStringTwo("  LOSE  ", "        ");
 			while (1) {
 			}
 		}
-		if (result == 0) {
+		if (result == 2) {
 			LCDclear();
 			writeStringTwo("  LOSE  ", "        ");
+			while (1) {
+			}
+		}
+		if (myGame.player.x == myGame.information.row - 1
+				&& myGame.player.y == myGame.information.height - 1) {
+			LCDclear();
+			writeStringTwo("  WIN   ", "        ");
 			while (1) {
 			}
 		}
@@ -117,7 +125,7 @@ void debounce()
 #pragma vector=PORT1_VECTOR
 __interrupt void Port_1_ISR(void)
 {
-
+	__disable_interrupt();
 	if (P1IFG & BIT0) {
 		if (BIT0 & P1IES) {
 			flag = BUTTON_1;
@@ -156,6 +164,7 @@ __interrupt void Port_1_ISR(void)
 		P1IES ^= BIT3;
 		P1IFG &= ~BIT3;
 	}
+	__enable_interrupt();
 }
 
 #pragma vector=TIMER0_A1_VECTOR
