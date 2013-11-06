@@ -8,10 +8,10 @@ Sets the position on the gameboard to the char type<br>
 `void setPosition(board_t * board, char object, int row, int column)`
 
 Attempts to move the player in X/Y direction. Diagonal and moves greater than distance 1 are not supported.<br>
---returns zero if the move was made with no errors<br>
---returns one if the player tried to move out of bounds, no move made<br>
---returns two if the player hit an object, no move made
-`char movDirection(board_t * board, int xDirection, int yDirection)`
+--returns zero if the player hit the wall<br>
+--returns one if the player made a valid move<br>
+--returns two if the player hit an object<br>
+`int movDirection(board_t * board, int xDirection, int yDirection)`
 
 Returns a pointer to a single string that represents the board <br>
 `char * toString(board_t * board)`
