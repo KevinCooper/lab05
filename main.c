@@ -48,13 +48,13 @@ int main(void)
 		case BUTTON_3:
 			clearTimer();
 			counter = 0;
-			result = movDirection(&myGame, 0, 1);
+			result = movDirection(&myGame, 0, -1);
 			updateBoard(myGame);
 			break;
 		case BUTTON_4:
 			clearTimer();
 			counter = 0;
-			result = movDirection(&myGame, 0, -1);
+			result = movDirection(&myGame, 0, 1);
 			updateBoard(myGame);
 			break;
 		case CLOCK:
