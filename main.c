@@ -2,6 +2,7 @@
 #include "LCDDriver/LCDDriver.h"
 #include "TemplateGame/game.h"
 #include "clock/clock.h"
+#include "msp430-rng/rand.h"
 
 #define BUTTON_1 1
 #define BUTTON_2 2
@@ -12,6 +13,7 @@
 void setup();
 void clearTimer();
 void updateBoard(board_t myGame);
+void buildBombs(board_t myGame);
 
 char flag;
 
@@ -24,6 +26,7 @@ int main(void)
 	LCDclear();
 
 	board_t myGame = newGameBoard(8, 2);
+	buildBombs(myGame);
 	updateBoard(myGame);
 	int counter = 0;
 	flag = 0;
@@ -83,6 +86,21 @@ int main(void)
 		}
 	}
 	return 0;
+}
+
+void buildBombs(board_t myGame)
+{
+	unsigned int state = rand();
+	int spaceBottom = 1;
+	int spaceTop = prand(state) % 3 + 1; //top is between 1-3
+	if (prand(state) % 2 == 0) {
+		spaceBottom = spaceTop + (prand(state) % 2 + 2);
+	} else {
+		spaceBottom = spaceTop - (prand(state) % 2 + 2);
+	}
+	const char bomb = '*';
+	setPosition(&myGame, bomb, 0, spaceTop);
+	setPosition(&myGame, bomb, 1, spaceBottom);
 }
 
 void updateBoard(board_t myGame)

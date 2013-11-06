@@ -67,7 +67,6 @@ int movDirection(board_t * board, int xDirection, int yDirection)
 		}else{
 			return 2; //Hit something bad
 		}
-		return 1;
 	} else {
 		return 0;  //Hit some wall
 	}
