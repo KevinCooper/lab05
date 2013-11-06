@@ -25,39 +25,47 @@ int main(void)
 	LCDclear();
 
 	board_t myGame = newGameBoard(8, 2);
+	updateBoard(myGame);
 	int counter = 0;
 	flag = 0;
-	updateBoard(myGame);
+	char result = 0; //Determines what should happen based on the movement made
+
 	setup();
 
 
 	while (1) {
-		updateBoard(myGame);
 		switch (flag) {
 		case BUTTON_1:
 			clearTimer();
 			counter = 0;
+			result = movDirection(&myGame, 1, 0);
 		case BUTTON_2:
 			clearTimer();
 			counter = 0;
+			result = movDirection(&myGame, -1, 0);
 		case BUTTON_3:
 			clearTimer();
 			counter = 0;
+			result = movDirection(&myGame, 0, 1);
 		case BUTTON_4:
 			clearTimer();
 			counter = 0;
+			result = movDirection(&myGame, 0, -1);
 		case CLOCK:
 			counter++;
 		}
 		if(counter ==8){
+			LCDclear();
 			writeStringTwo("  LOSE  ", "        ");
 			while(1){}
 		}
+		updateBoard(myGame);
 	}
 	return 0;
 }
 
 void updateBoard(board_t myGame){
+	LCDclear();
 	char * boardString = toString(&myGame);
 	writeString(boardString);
 	freeString(boardString);
@@ -96,7 +104,7 @@ void debounce()
 #pragma vector=PORT1_VECTOR
 __interrupt void Port_1_ISR(void)
 {
-
+	__disable_interrupt();
 	if (P1IFG & BIT0) {
 		if (BIT0 & P1IES) {
 			flag = BUTTON_1;
@@ -135,6 +143,7 @@ __interrupt void Port_1_ISR(void)
 		P1IES ^= BIT3;
 		P1IFG &= ~BIT3;
 	}
+	__enable_interrupt();
 }
 
 #pragma vector=TIMER0_A1_VECTOR
