@@ -27,7 +27,7 @@ int main(void)
 	updateBoard(myGame);
 	int counter = 0;
 	flag = 0;
-	char result = 0; //Determines what should happen based on the movement made
+	char result = 100; //Determines what should happen based on the movement made
 
 	setup();
 
@@ -63,7 +63,7 @@ int main(void)
 			while (1) {
 			}
 		}
-		if (result == 1) {
+		if (result == 0) {
 			LCDclear();
 			writeStringTwo("  LOSE  ", "        ");
 			while (1) {
