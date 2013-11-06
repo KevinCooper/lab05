@@ -7,7 +7,7 @@ The first part of this lab will be to implement the logic for the game.  by desi
 ### Software Flow Chart / Algorithms
 
 ### Hardware Schematic
-
+![Picture of MSP430 Pin Layout](images/schematic.gif)
 ## Implementation
 
 ## Testing Methodology / Results
