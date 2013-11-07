@@ -65,7 +65,7 @@ int main(void)
 			break;
 		}
 		flag = 0;
-		if (counter == 1000) {
+		if (counter == 4) {
 			LCDclear();
 			writeStringTwo("  LOSE  ", "        ");
 			while (1) {
@@ -90,14 +90,13 @@ int main(void)
 
 void buildBombs(board_t myGame)
 {
-	writeString("GenerateRandoms ");
-	unsigned int state = rand();
-	int spaceBottom = 1;
-	int spaceTop = prand(state) % 3 + 1; //top is between 1-3
-	if (prand(state) % 2 == 0) {
-		spaceBottom = spaceTop + (prand(state) % 2 + 2);
+	//unsigned int state = rand();
+	int spaceBottom = 1; //prand(state) == 2874
+	int spaceTop = 2874 % 3 + 1; //top is between 1-3
+	if (2874 % 2 == 0) {
+		spaceBottom = spaceTop + (2874 % 2 + 2);
 	} else {
-		spaceBottom = spaceTop - (prand(state) % 2 + 2);
+		spaceBottom = spaceTop - (2874 % 2 + 2);
 	}
 	const char bomb = '*';
 	setPosition(&myGame, bomb, 0, spaceTop);
