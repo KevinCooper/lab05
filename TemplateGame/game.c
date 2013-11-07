@@ -13,7 +13,6 @@
 #define START_Y 0
 #define BLANK ' '
 
-char getPosition(board_t * board, int row, int column);
 
 board_t newGameBoard(int sizeX, int sizeY)
 {
@@ -67,7 +66,6 @@ int movDirection(board_t * board, int xDirection, int yDirection)
 		}else{
 			return 2; //Hit something bad
 		}
-		return 1;
 	} else {
 		return 0;  //Hit some wall
 	}

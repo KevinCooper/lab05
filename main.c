@@ -14,8 +14,10 @@ void setup();
 void clearTimer();
 void updateBoard(board_t myGame);
 void buildBombs(board_t myGame);
+void makeHarder(board_t * myGame);
 
 char flag;
+short int status;
 
 int main(void)
 {
@@ -24,12 +26,13 @@ int main(void)
 	initSPI();
 	LCDinit();
 	LCDclear();
-
+	status = 1;
 	board_t myGame = newGameBoard(8, 2);
 	buildBombs(myGame);		//2 min 19 sec
 	updateBoard(myGame);
 	int counter = 0;
 	flag = 0;
+	char hard = 0;
 	int result = 0; //Determines what should happen based on the movement made
 
 	setup();
@@ -39,11 +42,13 @@ int main(void)
 		case BUTTON_1:
 			clearTimer();
 			counter = 0;
+			hard = 0;
 			result = movDirection(&myGame, 1, 0);
 			updateBoard(myGame);
 			break;
 		case BUTTON_2:
 			clearTimer();
+			hard = 0;
 			counter = 0;
 			result = movDirection(&myGame, -1, 0);
 			updateBoard(myGame);
@@ -51,12 +56,14 @@ int main(void)
 		case BUTTON_3:
 			clearTimer();
 			counter = 0;
+			hard = 0;
 			result = movDirection(&myGame, 0, -1);
 			updateBoard(myGame);
 			break;
 		case BUTTON_4:
 			clearTimer();
 			counter = 0;
+			hard = 0;
 			result = movDirection(&myGame, 0, 1);
 			updateBoard(myGame);
 			break;
@@ -65,6 +72,12 @@ int main(void)
 			break;
 		}
 		flag = 0;
+		if (counter == 2 && hard ==0) {
+			makeHarder(&myGame);
+			updateBoard(myGame);
+			hard = 1;
+		}
+
 		if (counter == 4) {
 			LCDclear();
 			writeStringTwo("  LOSE  ", "        ");
@@ -85,12 +98,34 @@ int main(void)
 			}
 		}
 	}
-	return 0;
 }
 
+void makeHarder(board_t * myGame)
+{
+	const char bomb = '*';
+	const char blank = ' ';
+	int row = 0, column = 0;
+	for (row = 0; row < myGame->information.height; row++) {
+		for (column = 0; column < myGame->information.row; column++) {
+			if (getPosition(myGame, row, column) == '*') {
+				setPosition(myGame, bomb, row, column + status);
+				if (myGame->player.x == column + status
+						&& myGame->player.y == row) {
+					LCDclear();
+					writeStringTwo(" !BOOM! ", "><(((°> ");
+					while (1) {
+					};
+				}
+				setPosition(myGame, blank, row, column);
+				break;
+			}
+		}
+	}
+	status *= -1;
+}
 void buildBombs(board_t myGame)
 {
-	//unsigned int state = rand();
+//unsigned int state = rand();
 	int spaceBottom = 1; //prand(state) == 2874
 	int spaceTop = 2874 % 3 + 1; //top is between 1-3
 	if (2874 % 2 == 0) {
