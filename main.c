@@ -119,6 +119,7 @@ void makeHarder(board_t * myGame)
 					LCDclear();
 					writeStringTwo(" !BOOM! ", "><(((°> ");
 					while (1) {
+					gameset=1;
 					};
 				}
 				setPosition(myGame, blank, row, column);
