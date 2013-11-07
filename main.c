@@ -40,41 +40,44 @@ int main(void)
 	setup();
 
 	while (1) {
-		switch (flag) {
-		case BUTTON_1:
-			clearTimer();
-			counter = 0;
-			hard = 0;
-			result = movDirection(&myGame, 1, 0);
-			updateBoard(myGame);
-			break;
-		case BUTTON_2:
-			clearTimer();
-			hard = 0;
-			counter = 0;
-			result = movDirection(&myGame, -1, 0);
-			updateBoard(myGame);
-			break;
-		case BUTTON_3:
-			clearTimer();
-			counter = 0;
-			hard = 0;
-			result = movDirection(&myGame, 0, -1);
-			updateBoard(myGame);
-			break;
-		case BUTTON_4:
-			clearTimer();
-			counter = 0;
-			hard = 0;
-			result = movDirection(&myGame, 0, 1);
-			updateBoard(myGame);
-			break;
-		case CLOCK:
-			counter++;
-			break;
+		if (flag)
+		{
+			switch (flag) {
+				case BUTTON_1:
+					clearTimer();
+					counter = 0;
+					hard = 0;
+					result = movDirection(&myGame, 1, 0);
+					updateBoard(myGame);
+					break;
+				case BUTTON_2:
+					clearTimer();
+					hard = 0;
+					counter = 0;
+					result = movDirection(&myGame, -1, 0);
+					updateBoard(myGame);
+					break;
+				case BUTTON_3:
+					clearTimer();
+					counter = 0;
+					hard = 0;
+					result = movDirection(&myGame, 0, -1);
+					updateBoard(myGame);
+					break;
+				case BUTTON_4:
+					clearTimer();
+					counter = 0;
+					hard = 0;
+					result = movDirection(&myGame, 0, 1);
+					updateBoard(myGame);
+					break;
+				case CLOCK:
+					counter++;
+					break;
+			}
+			flag = 0;
 		}
-		flag = 0;
-		if (counter == 1 && hard == 0) {
+		if (counter != 0 && hard == 0) {
 			makeHarder(&myGame);
 			updateBoard(myGame);
 			hard = 1;
@@ -89,7 +92,7 @@ int main(void)
 		}
 		if (result == 2) {
 			LCDclear();
-			writeStringTwo(" !BOOM! ", "><(((°> ");
+			writeStringTwo(" !BOOM! ", "        ");
 			while (1) {
 				gameset = 1;
 			}
@@ -117,7 +120,7 @@ void makeHarder(board_t * myGame)
 				if (myGame->player.x == column + status
 						&& myGame->player.y == row) {
 					LCDclear();
-					writeStringTwo(" !BOOM! ", "><(((°> ");
+					writeStringTwo(" !BOOM! ", "        ");
 					while (1) {
 					gameset=1;
 					};

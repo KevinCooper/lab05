@@ -13,7 +13,6 @@
 #define START_Y 0
 #define BLANK ' '
 
-
 board_t newGameBoard(int sizeX, int sizeY)
 {
 	int i;
@@ -27,7 +26,6 @@ board_t newGameBoard(int sizeX, int sizeY)
 	for (i = 0; i < temp.information.height; i++) {
 		temp.boardPtr[i] = malloc(temp.information.row * sizeof(char));
 	}
-
 
 	//Referenced the following link to better understand how 2d arrays work with pointers in C
 	//http://stackoverflow.com/questions/3911400/passing-2d-arrays
@@ -57,13 +55,15 @@ char getPosition(board_t * board, int row, int column)
 int movDirection(board_t * board, int xDirection, int yDirection)
 {
 	if (board->player.x + xDirection < board->information.row
-			&& board->player.y + yDirection < board->information.height) {
+			&& board->player.x + xDirection >= 0
+			&& board->player.y + yDirection < board->information.height
+			&& board->player.y + yDirection >= 0) {
 		if ((getPosition(board, board->player.y + yDirection,
 				board->player.x + xDirection) == BLANK)) {
 			board->player.x += xDirection;
 			board->player.y += yDirection;
 			return 1;  //Good move
-		}else{
+		} else {
 			return 2; //Hit something bad
 		}
 	} else {
