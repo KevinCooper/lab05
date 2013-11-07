@@ -18,9 +18,11 @@ void makeHarder(board_t * myGame);
 
 char flag;
 short int status;
+char gameset;
 
 int main(void)
 {
+	gameset = 0;
 	WDTCTL = WDTPW | WDTHOLD;                 // stop the watchdog timer
 	setFrequency(SPEED_1MHZ);
 	initSPI();
@@ -72,7 +74,7 @@ int main(void)
 			break;
 		}
 		flag = 0;
-		if (counter == 2 && hard ==0) {
+		if (counter == 1 && hard == 0) {
 			makeHarder(&myGame);
 			updateBoard(myGame);
 			hard = 1;
@@ -82,12 +84,14 @@ int main(void)
 			LCDclear();
 			writeStringTwo("  LOSE  ", "        ");
 			while (1) {
+				gameset = 1;
 			}
 		}
 		if (result == 2) {
 			LCDclear();
 			writeStringTwo(" !BOOM! ", "><(((°> ");
 			while (1) {
+				gameset = 1;
 			}
 		}
 		if (myGame.player.x == myGame.information.row - 1
@@ -95,6 +99,7 @@ int main(void)
 			LCDclear();
 			writeStringTwo("  WIN   ", "        ");
 			while (1) {
+				gameset = 1;
 			}
 		}
 	}
@@ -179,6 +184,10 @@ void debounce()
 __interrupt void Port_1_ISR(void)
 {
 	__disable_interrupt();
+	if (gameset) {
+		gameset = 0;
+		WDTCTL = 0x0011;
+	}
 	if (P1IFG & BIT0) {
 		if (BIT0 & P1IES) {
 			flag = BUTTON_1;
@@ -187,8 +196,7 @@ __interrupt void Port_1_ISR(void)
 		}
 		P1IES ^= BIT0;
 		P1IFG &= ~BIT0;
-	}
-	if (P1IFG & BIT1) {
+	} else if (P1IFG & BIT1) {
 		if (BIT1 & P1IES) {
 			flag = BUTTON_2;
 		} else {
