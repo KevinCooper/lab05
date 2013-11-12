@@ -1,0 +1,9 @@
+.ccsproject
+.cproject
+.launches/
+.project
+.settings/
+Debug/
+lnk_msp430g2553.cmd
+msp430-rng/.gitignore
+targetConfigs/
